@@ -29,9 +29,11 @@ export default function Home(): JSX.Element {
   const getImages = async ({
     pageParam = '',
   }: GetImageOptions): Promise<ImagesResponse> => {
-    const { data } = await api.get<ImagesResponse>(
-      `api/images?after=${pageParam}`
-    );
+    const { data } = await api.get<ImagesResponse>('api/images', {
+      params: {
+        after: pageParam,
+      },
+    });
     return data;
   };
 
@@ -43,7 +45,7 @@ export default function Home(): JSX.Element {
     fetchNextPage,
     hasNextPage,
   } = useInfiniteQuery('images', getImages, {
-    getNextPageParam: (prevPage, pages) => prevPage.after,
+    getNextPageParam: (prevPage, pages) => prevPage.after ?? null,
   });
 
   const formattedData = useMemo<Array<Image>>(() => {
